@@ -1,3 +1,15 @@
+# Introduction
 Data and source code for the paper "Going the Extra Mile: Analysis of Gas Mileage on US Vehicles".
-
 The paper is currently under review by the editors of ASA Chance.
+
+
+# Organization
+
+Functions used in the paper can be found in the folder `code`, while the resulting datasets are available in `data`.
+
+
+# Usage
+
+The code is written to follow the next steps
+
+ 1. `fetch.r` for fetching data from the Fuel Economy site.

@@ -1,5 +1,7 @@
 # fetch.R: Functions to fetch data from the fueleconomy.gov website
 
+# Install and load the XML library
+install.packages("XML")
 require("XML")
 
 # Used to clean strings
