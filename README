@@ -13,3 +13,4 @@ Functions used in the paper can be found in the folder `code`, while the resulti
 The code is written to follow the next steps
 
  1. `fetch.r` for fetching data from the Fuel Economy site.
+ 
