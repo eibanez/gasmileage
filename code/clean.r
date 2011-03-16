@@ -61,7 +61,7 @@ mpg$speeds <- factor(temp)
 summary(mpg$drive)
 mpg <- mpg[mpg$drive != "" | mpg$nospeeds == 1, ]
 SimpleDrive <- function(letter) {
-  switch(letter, F="Front", "2"="Front", R="Rear", "A"="All", "4"="All", "None")
+  switch(letter, F="Front", "2"="Front", R="Rear", "4"=, P=, "A"="All", "None")
 }
 mpg$drive <- lapply(strtrim(mpg$drive, 1), SimpleDrive)
 mpg$drive <- as.character(mpg$drive)
@@ -79,7 +79,7 @@ temp <- gsub(" Cars", "", temp)
 temp <- gsub(" Wagons", "", temp)
 temp <- gsub(" Trucks", "", temp)
 temp <- gsub("Standard", "Std.", temp)
-temp <- gsub("Midsize-", "", temp)
+temp <- gsub("-Large", "", temp)
 temp[strtrim(temp,7) == "Special"] <- "Special"
 temp[strtrim(temp,4) == "Vans"] <- "Vans"
 temp[strtrim(temp,5) == "Sport"] <- "SUVs"
