@@ -1,7 +1,6 @@
 # fetch.R: Functions to fetch data from the fueleconomy.gov website
 
 # Install and load the XML library
-install.packages("XML")
 require("XML")
 
 # Used to clean strings
@@ -68,7 +67,8 @@ getMakeName <- function(shortmake) {
 # Get data from the end of tables
 getDataBottom <- function(tds,num) {
   tmp <- sapply(xmlChildren(tds[[length(tds)-num]]), xmlValue)
-  getDataBottom <- trim(as.character(tmp))
+  tmp2 <- trim(as.character(tmp))
+  getDataBottom <- ifelse(length(tmp2)==0, "", tmp2)
 }
 
 # Read mpg information for the corresponding cell
@@ -111,14 +111,20 @@ getVehicleData <- function(id) {
     tds <- getNodeSet(doc, "//td")
     temp <- sapply(xmlChildren(tds[[1]]), xmlValue)
     if (length(temp)==1) temp <- sapply(xmlChildren(tds[[2]]), xmlValue)
-    val_eng <- strsplit(trim(temp[1]), ", ")$text
-    valves <- gsub(" cyl", "", val_eng[1])
-    engine <- gsub(" L", "", val_eng[2])
-    trans <- trim(temp[3])
-    fuel <- strsplit(trim(temp[5]), " or ")$text
+    if (length(temp)==3) {
+      valves <- "0"
+      engine <- "0"
+      trans <- "None"
+      fuel <- "Electricity"
+    } else {
+      val_eng <- strsplit(trim(temp[1]), ", ")$text
+      valves <- gsub(" cyl", "", val_eng[1])
+      engine <- gsub(" L", "", val_eng[2])
+      trans <- trim(temp[3])
+      fuel <- strsplit(trim(temp[length(temp)]), " or ")$text
+    }
     
     # Get values in the last table
-    len <- length(tds)
     class <- getDataBottom(tds, 8)
     drive <- getDataBottom(tds, 7)
     guzzler <- getDataBottom(tds, 6)
@@ -131,7 +137,11 @@ getVehicleData <- function(id) {
     tech <- cbind(class, engine, valves, trans, drive, guzzler, turbo, super, passenger, cargo)
     
     # Read fuel economy values for all fuels
-    if (length(fuel)==1) {
+    if (fuel[1] == "Electricity") {
+      mpgs <- getMpgCell(tds[[3]], 1)
+      special <- sapply(xmlChildren(tds[[2]]), xmlValue)[2]
+      getVehicleData <- cbind(id, model, mpgs, tech, special)
+    } else if (length(fuel) == 1) {
       mpgs <- getMpgCell(tds[[3]])
       special <- sapply(xmlChildren(tds[[2]]), xmlValue)[2]
       getVehicleData <- cbind(id, model, mpgs, tech, special)
@@ -157,7 +167,7 @@ time_start <- date()
 
 # Check all possible id's and store results
 r <- NULL
-for (i in 1:30000) r <- rbind(r, getVehicleData(i))
+for (i in 1:31100) r <- rbind(r, getVehicleData(i))
 
 # Save the time when done fetching
 time_finish <- date()
