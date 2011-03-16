@@ -85,5 +85,5 @@ temp[strtrim(temp,4) == "Vans"] <- "Vans"
 temp[strtrim(temp,5) == "Sport"] <- "SUVs"
 mpg$class <- factor(temp)
 
-write.csv(mpg, "mpg.csv")
+write.csv(mpg, "mpg.csv", row.names = FALSE)
 
